@@ -195,13 +195,24 @@ pipeline {
         stage('Verificar Build') {
             steps {
                 echo 'Verificando artefactos generados...'
-                bat '''
-                    echo === Estructura del frontend/build ===
-                    dir %FRONTEND_DIR%\\build || echo No se encontró directorio build
-                    
-                    echo === Archivos estáticos del backend ===
-                    dir %BACKEND_DIR%\\staticfiles || echo No se encontró directorio staticfiles
-                '''
+                script {
+                    bat '''
+                        echo === Estructura del frontend/build ===
+                        if exist %FRONTEND_DIR%\\build (
+                            dir %FRONTEND_DIR%\\build
+                        ) else (
+                            echo No se encontró directorio build
+                        )
+                        
+                        echo.
+                        echo === Archivos estáticos del backend ===
+                        if exist %BACKEND_DIR%\\staticfiles (
+                            dir %BACKEND_DIR%\\staticfiles
+                        ) else (
+                            echo No se encontró directorio staticfiles
+                        )
+                    '''
+                }
             }
         }
         
