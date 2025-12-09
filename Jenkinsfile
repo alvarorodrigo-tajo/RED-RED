@@ -1,6 +1,12 @@
 pipeline {
     agent any
     
+    tools {
+        // Configurar Python desde Jenkins (debe estar configurado en Global Tool Configuration)
+        // Si no está configurado, comenta esta línea
+        // python 'Python-3.11'
+    }
+    
     environment {
         // Configuraciones de Node.js
         NODE_VERSION = '21.0.0'
@@ -9,6 +15,10 @@ pipeline {
         // Configuraciones de Python
         PYTHON_VERSION = '3.11.6'
         VENV_DIR = "${WORKSPACE}\\venv"
+        
+        // Ruta de Python (ajusta según tu instalación)
+        PYTHON_HOME = 'C:\\Python311'
+        PATH = "${PYTHON_HOME};${PYTHON_HOME}\\Scripts;${PATH}"
         
         // Directorios del proyecto
         BACKEND_DIR = 'backend'
@@ -44,16 +54,23 @@ pipeline {
         stage('Instalar Dependencias - Backend') {
             steps {
                 echo 'Instalando dependencias de Python...'
-                bat '''
-                    rem Crear entorno virtual
-                    python -m venv %VENV_DIR%
-                    
-                    rem Activar entorno virtual e instalar dependencias
-                    call %VENV_DIR%\\Scripts\\activate.bat
-                    python -m pip install --upgrade pip
-                    pip install setuptools
-                    pip install -r requirements.txt
-                '''
+                script {
+                    def pythonExists = bat(script: 'python --version', returnStatus: true) == 0
+                    if (pythonExists) {
+                        bat '''
+                            rem Crear entorno virtual
+                            python -m venv %VENV_DIR%
+                            
+                            rem Activar entorno virtual e instalar dependencias
+                            call %VENV_DIR%\\Scripts\\activate.bat
+                            python -m pip install --upgrade pip
+                            pip install setuptools
+                            pip install -r requirements.txt
+                        '''
+                    } else {
+                        echo ⚠️ Python no está instalado. Saltando instalación de dependencias del backend.'
+                    }
+                }
             }
         }
         
