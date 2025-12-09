@@ -40,7 +40,6 @@ pipeline {
         stage('Instalar Dependencias - Backend') {
             steps {
                 echo 'Instalando dependencias de Python...'
-                dir("${BACKEND_DIR}") {
                     sh '''
                         # Crear entorno virtual
                         python3 -m venv ${VENV_DIR}
@@ -50,7 +49,6 @@ pipeline {
                         pip install --upgrade pip
                         pip install -r requirements.txt
                     '''
-                }
             }
         }
         
@@ -58,7 +56,7 @@ pipeline {
             steps {
                 echo 'Instalando dependencias raíz del proyecto...'
                 sh '''
-                    npm ci --prefer-offline --no-audit
+                    npm install
                 '''
             }
         }
@@ -68,6 +66,7 @@ pipeline {
                 echo 'Instalando dependencias del frontend...'
                 dir("${FRONTEND_DIR}") {
                     sh '''
+                        npm install
                         npm ci --prefer-offline --no-audit
                     '''
                 }
