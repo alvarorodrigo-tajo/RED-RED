@@ -1,12 +1,6 @@
 pipeline {
     agent any
     
-    tools {
-        // Configurar Python desde Jenkins (debe estar configurado en Global Tool Configuration)
-        // Si no está configurado, comenta esta línea
-        // python 'Python-3.11'
-    }
-    
     environment {
         // Configuraciones de Node.js
         NODE_VERSION = '21.0.0'
