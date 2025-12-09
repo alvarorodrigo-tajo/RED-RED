@@ -2,7 +2,7 @@
 
 # 🔴 RED-RED Social Network 🔴
 
-### *La Red Social de Nueva Generación*
+### *La Red Social de la Nueva Generación*
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)](https://www.python.org/)
