@@ -68,7 +68,7 @@ pipeline {
                             pip install -r requirements.txt
                         '''
                     } else {
-                        echo ⚠️ Python no está instalado. Saltando instalación de dependencias del backend.'
+                        echo 'Python no está instalado. Saltando instalación de dependencias del backend.'
                     }
                 }
             }
@@ -99,15 +99,22 @@ pipeline {
             steps {
                 echo 'Ejecutando lint en el backend...'
                 dir("${BACKEND_DIR}") {
-                    bat '''
-                        call %VENV_DIR%\\Scripts\\activate.bat
-                        
-                        rem Instalar herramientas de linting si no están
-                        pip install flake8 black
-                        
-                        rem Ejecutar flake8 (opcional: no fallar el build)
-                        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics || exit 0
-                    '''
+                    script {
+                        def pythonExists = bat(script: 'python --version', returnStatus: true) == 0
+                        if (pythonExists) {
+                            bat '''
+                                call %VENV_DIR%\\Scripts\\activate.bat
+                                
+                                rem Instalar herramientas de linting si no están
+                                pip install flake8 black
+                                
+                                rem Ejecutar flake8 (opcional: no fallar el build)
+                                flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics || exit 0
+                            '''
+                        } else {
+                            echo 'Python no disponible. Saltando lint del backend.'
+                        }
+                    }
                 }
             }
         }
@@ -128,12 +135,19 @@ pipeline {
             steps {
                 echo 'Ejecutando tests del backend...'
                 dir("${BACKEND_DIR}") {
-                    bat '''
-                        call %VENV_DIR%\\Scripts\\activate.bat
-                        
-                        rem Ejecutar tests de Django
-                        python manage.py test --noinput || echo Tests fallaron o no existen
-                    '''
+                    script {
+                        def pythonExists = bat(script: 'python --version', returnStatus: true) == 0
+                        if (pythonExists) {
+                            bat '''
+                                call %VENV_DIR%\\Scripts\\activate.bat
+                                
+                                rem Ejecutar tests de Django
+                                python manage.py test --noinput || echo Tests fallaron o no existen
+                            '''
+                        } else {
+                            echo 'Python no disponible. Saltando tests del backend.'
+                        }
+                    }
                 }
             }
         }
@@ -167,12 +181,19 @@ pipeline {
             steps {
                 echo 'Recolectando archivos estáticos de Django...'
                 dir("${BACKEND_DIR}") {
-                    bat '''
-                        call %VENV_DIR%\\Scripts\\activate.bat
-                        
-                        rem Ejecutar collectstatic
-                        python manage.py collectstatic --noinput || echo collectstatic falló o no está configurado
-                    '''
+                    script {
+                        def pythonExists = bat(script: 'python --version', returnStatus: true) == 0
+                        if (pythonExists) {
+                            bat '''
+                                call %VENV_DIR%\\Scripts\\activate.bat
+                                
+                                rem Ejecutar collectstatic
+                                python manage.py collectstatic --noinput || echo collectstatic falló o no está configurado
+                            '''
+                        } else {
+                            echo 'Python no disponible. Saltando collectstatic.'
+                        }
+                    }
                 }
             }
         }
@@ -201,12 +222,12 @@ pipeline {
     
     post {
         success {
-            echo '✅ Build completado exitosamente!'
+            echo 'Build completado exitosamente!'
             // Aquí puedes agregar notificaciones (email, Slack, etc.)
         }
         
         failure {
-            echo '❌ Build falló!'
+            echo 'Build falló!'
             // Aquí puedes agregar notificaciones de fallo
         }
         
