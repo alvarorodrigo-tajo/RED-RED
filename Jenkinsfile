@@ -4,11 +4,11 @@ pipeline {
     environment {
         // Configuraciones de Node.js
         NODE_VERSION = '21.0.0'
-        NPM_CONFIG_CACHE = "${WORKSPACE}/.npm"
+        NPM_CONFIG_CACHE = "${WORKSPACE}\\.npm"
         
         // Configuraciones de Python
         PYTHON_VERSION = '3.11.6'
-        VENV_DIR = "${WORKSPACE}/venv"
+        VENV_DIR = "${WORKSPACE}\\venv"
         
         // Directorios del proyecto
         BACKEND_DIR = 'backend'
@@ -28,11 +28,15 @@ pipeline {
                 checkout scm
                 
                 echo 'Mostrando información del entorno...'
-                sh '''
-                    echo "Node version: $(node --version)"
-                    echo "NPM version: $(npm --version)"
-                    echo "Python version:  $(python3 --version)"
-                    echo "Directorio actual: $(pwd)"
+                bat '''
+                    echo Node version:
+                    node --version
+                    echo NPM version:
+                    npm --version
+                    echo Python version:
+                    python --version
+                    echo Directorio actual:
+                    cd
                 '''
             }
         }
@@ -40,25 +44,23 @@ pipeline {
         stage('Instalar Dependencias - Backend') {
             steps {
                 echo 'Instalando dependencias de Python...'
-                    sh '''
-                        # Crear entorno virtual
-                        python3 -m venv ${VENV_DIR}
-                        
-                        # Activar entorno virtual e instalar dependencias
-                        .  ${VENV_DIR}/bin/activate
-                        pip install --upgrade pip
-
-                        pip install setuptools
-                        
-                        pip install -r requirements.txt
-                    '''
+                bat '''
+                    rem Crear entorno virtual
+                    python -m venv %VENV_DIR%
+                    
+                    rem Activar entorno virtual e instalar dependencias
+                    call %VENV_DIR%\\Scripts\\activate.bat
+                    python -m pip install --upgrade pip
+                    pip install setuptools
+                    pip install -r requirements.txt
+                '''
             }
         }
         
         stage('Instalar Dependencias - Frontend (Root)') {
             steps {
                 echo 'Instalando dependencias raíz del proyecto...'
-                sh '''
+                bat '''
                     npm install
                 '''
             }
@@ -68,7 +70,7 @@ pipeline {
             steps {
                 echo 'Instalando dependencias del frontend...'
                 dir("${FRONTEND_DIR}") {
-                    sh '''
+                    bat '''
                         npm install
                         npm ci --prefer-offline --no-audit
                     '''
@@ -80,14 +82,14 @@ pipeline {
             steps {
                 echo 'Ejecutando lint en el backend...'
                 dir("${BACKEND_DIR}") {
-                    sh '''
-                        .  ${VENV_DIR}/bin/activate
+                    bat '''
+                        call %VENV_DIR%\\Scripts\\activate.bat
                         
-                        # Instalar herramientas de linting si no están
+                        rem Instalar herramientas de linting si no están
                         pip install flake8 black
                         
-                        # Ejecutar flake8 (opcional:  no fallar el build)
-                        flake8 .  --count --select=E9,F63,F7,F82 --show-source --statistics || true
+                        rem Ejecutar flake8 (opcional: no fallar el build)
+                        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics || exit 0
                     '''
                 }
             }
@@ -97,9 +99,9 @@ pipeline {
             steps {
                 echo 'Ejecutando lint en el frontend...'
                 dir("${FRONTEND_DIR}") {
-                    sh '''
-                        # Si existe script de lint en package.json
-                        npm run lint --if-present || echo "No lint script found, skipping..."
+                    bat '''
+                        rem Si existe script de lint en package.json
+                        npm run lint --if-present || echo No lint script found, skipping...
                     '''
                 }
             }
@@ -109,11 +111,11 @@ pipeline {
             steps {
                 echo 'Ejecutando tests del backend...'
                 dir("${BACKEND_DIR}") {
-                    sh '''
-                        .  ${VENV_DIR}/bin/activate
+                    bat '''
+                        call %VENV_DIR%\\Scripts\\activate.bat
                         
-                        # Ejecutar tests de Django
-                        python manage.py test --noinput || echo "Tests fallaron o no existen"
+                        rem Ejecutar tests de Django
+                        python manage.py test --noinput || echo Tests fallaron o no existen
                     '''
                 }
             }
@@ -123,9 +125,10 @@ pipeline {
             steps {
                 echo 'Ejecutando tests del frontend...'
                 dir("${FRONTEND_DIR}") {
-                    sh '''
-                        # Ejecutar tests con coverage
-                        CI=true npm test -- --coverage --watchAll=false --passWithNoTests || echo "Tests fallaron o no existen"
+                    bat '''
+                        rem Ejecutar tests con coverage
+                        set CI=true
+                        npm test -- --coverage --watchAll=false --passWithNoTests || echo Tests fallaron o no existen
                     '''
                 }
             }
@@ -135,8 +138,9 @@ pipeline {
             steps {
                 echo 'Compilando frontend para producción...'
                 dir("${FRONTEND_DIR}") {
-                    sh '''
-                        CI=false npm run build
+                    bat '''
+                        set CI=false
+                        npm run build
                     '''
                 }
             }
@@ -146,11 +150,11 @@ pipeline {
             steps {
                 echo 'Recolectando archivos estáticos de Django...'
                 dir("${BACKEND_DIR}") {
-                    sh '''
-                        . ${VENV_DIR}/bin/activate
+                    bat '''
+                        call %VENV_DIR%\\Scripts\\activate.bat
                         
-                        # Ejecutar collectstatic
-                        python manage. py collectstatic --noinput || echo "collectstatic falló o no está configurado"
+                        rem Ejecutar collectstatic
+                        python manage.py collectstatic --noinput || echo collectstatic falló o no está configurado
                     '''
                 }
             }
@@ -159,12 +163,12 @@ pipeline {
         stage('Verificar Build') {
             steps {
                 echo 'Verificando artefactos generados...'
-                sh '''
-                    echo "=== Estructura del frontend/build ==="
-                    ls -lah ${FRONTEND_DIR}/build || echo "No se encontró directorio build"
+                bat '''
+                    echo === Estructura del frontend/build ===
+                    dir %FRONTEND_DIR%\\build || echo No se encontró directorio build
                     
-                    echo "=== Archivos estáticos del backend ==="
-                    ls -lah ${BACKEND_DIR}/staticfiles || echo "No se encontró directorio staticfiles"
+                    echo === Archivos estáticos del backend ===
+                    dir %BACKEND_DIR%\\staticfiles || echo No se encontró directorio staticfiles
                 '''
             }
         }
@@ -172,8 +176,8 @@ pipeline {
         stage('Archivar Artefactos') {
             steps {
                 echo 'Archivando artefactos del build...'
-                archiveArtifacts artifacts: 'frontend/build/**/*', fingerprint:  true, allowEmptyArchive: true
-                archiveArtifacts artifacts:  'backend/staticfiles/**/*', fingerprint: true, allowEmptyArchive: true
+                archiveArtifacts artifacts: 'frontend/build/**/*', fingerprint: true, allowEmptyArchive: true
+                archiveArtifacts artifacts: 'backend/staticfiles/**/*', fingerprint: true, allowEmptyArchive: true
             }
         }
     }
@@ -192,12 +196,12 @@ pipeline {
         always {
             echo 'Limpiando workspace...'
             // Limpiar cache y archivos temporales
-            sh '''
-                rm -rf ${VENV_DIR}
-                rm -rf ${NPM_CONFIG_CACHE}
-                rm -rf node_modules
-                rm -rf ${FRONTEND_DIR}/node_modules
-            ''' 
+            bat '''
+                if exist %VENV_DIR% rmdir /s /q %VENV_DIR%
+                if exist %NPM_CONFIG_CACHE% rmdir /s /q %NPM_CONFIG_CACHE%
+                if exist node_modules rmdir /s /q node_modules
+                if exist %FRONTEND_DIR%\\node_modules rmdir /s /q %FRONTEND_DIR%\\node_modules
+            '''
         }
     }
 }
