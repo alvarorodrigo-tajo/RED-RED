@@ -2,7 +2,7 @@
 
 # 🔴 RED-RED Social Network 🔴
 
-### *La Red Social de la Nueva Generación*
+### _La Red Social de Nueva Generación_
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)](https://www.python.org/)
@@ -39,6 +39,7 @@
 ### ✨ Características Principales
 
 #### 🎯 Core Features
+
 - ✅ **Autenticación JWT** - Sistema seguro
 - 👤 **Perfiles Personalizados** - Avatar & Bio
 - 📝 **Publicaciones Completas** - Texto e imágenes
@@ -47,6 +48,7 @@
 - 🔄 **Sistema de Seguimiento** - Follow/Unfollow
 
 #### 🚀 Advanced Features
+
 - 📸 **Stories de 24h** - Contenido temporal
 - 💬 **Chat en Tiempo Real** - WebSockets
 - 🔔 **Notificaciones Push** - Instantáneas
@@ -61,6 +63,7 @@
 <div align="center">
 
 ### Backend
+
 ![Django](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white)
 ![DRF](https://img.shields.io/badge/Django_REST-ff1709?style=for-the-badge&logo=django&logoColor=white)
 ![Channels](https://img.shields.io/badge/Channels-4.0-green?style=for-the-badge)
@@ -68,6 +71,7 @@
 ![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
 
 ### Frontend
+
 ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
@@ -75,6 +79,7 @@
 ![React Router](https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white)
 
 ### Herramientas & DevOps
+
 ![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
 ![NPM](https://img.shields.io/badge/NPM-CB3837?style=for-the-badge&logo=npm&logoColor=white)
 ![Pip](https://img.shields.io/badge/Pip-3776AB?style=for-the-badge&logo=pypi&logoColor=white)
@@ -91,6 +96,7 @@
 ### Vista Previa de la Aplicación
 
 <!-- Aquí puedes agregar capturas de pantalla de tu proyecto -->
+
 ![RED-RED Preview](./main-screenshot.png)
 
 </div>
@@ -111,12 +117,14 @@
 ### 🔧 Instalación Automática
 
 #### Windows
+
 ```bash
 # Ejecutar el script de instalación
 .\install.bat
 ```
 
 #### Linux/MacOS
+
 ```bash
 # Dar permisos y ejecutar
 chmod +x install.sh
@@ -184,6 +192,7 @@ start.bat  # Windows
 ```
 
 **Acceder a:**
+
 - 🌐 Frontend: `http://localhost:3000`
 - ⚙️ Backend API: `http://localhost:8000`
 - 🔧 Admin Panel: `http://localhost:8000/admin`
@@ -204,24 +213,24 @@ graph TB
         A --> F[Context API]
         F --> G[Auth Context]
     end
-    
+
     subgraph "⚙️ Backend - Django"
         H[Django Server] --> I[REST Framework]
         I --> J[JWT Auth]
         H --> K[Channels/WebSocket]
         K --> L[Redis]
     end
-    
+
     subgraph "🗄️ Base de Datos"
         M[(SQLite/PostgreSQL)]
         N[(Redis Cache)]
     end
-    
+
     A -->|HTTP/REST| I
     A -->|WebSocket| K
     I --> M
     K --> N
-    
+
     style A fill:#61DAFB,stroke:#333,stroke-width:2px,color:#000
     style H fill:#092E20,stroke:#333,stroke-width:2px,color:#fff
     style M fill:#003B57,stroke:#333,stroke-width:2px,color:#fff
@@ -242,7 +251,7 @@ sequenceDiagram
     participant F as 🎨 Frontend
     participant B as ⚙️ Backend
     participant DB as 🗄️ Database
-    
+
     U->>F: 1️⃣ Acción (Ej: Crear Post)
     F->>F: 2️⃣ Validación Local
     F->>B: 3️⃣ HTTP Request + JWT Token
@@ -265,7 +274,7 @@ sequenceDiagram
     participant R as 🔴 Redis
     participant F2 as 🎨 Frontend 2
     participant U2 as 👤 Usuario 2
-    
+
     U1->>F1: 1️⃣ Enviar Mensaje
     F1->>WS: 2️⃣ WS: Send Message
     WS->>R: 3️⃣ Publicar en Canal
@@ -369,28 +378,33 @@ RED-RED/
 ### 📝 Proceso de Contribución
 
 1. **Fork el proyecto** 🍴
+
    ```bash
    # Hacer fork desde GitHub
    ```
 
 2. **Clonar tu fork** 📥
+
    ```bash
    git clone https://github.com/tu-usuario/RED-RED.git
    cd RED-RED
    ```
 
 3. **Crear una rama** 🌿
+
    ```bash
    git checkout -b feature/AmazingFeature
    ```
 
 4. **Hacer cambios y commit** 💾
+
    ```bash
    git add .
    git commit -m "Add: Amazing Feature"
    ```
 
 5. **Push a tu fork** 🚀
+
    ```bash
    git push origin feature/AmazingFeature
    ```
@@ -413,24 +427,31 @@ RED-RED/
 ## 📚 Glosario Técnico
 
 ### 🔐 JWT (JSON Web Token)
+
 Sistema de autenticación basado en tokens que permite mantener sesiones seguras sin necesidad de cookies. El token contiene información encriptada del usuario.
 
 ### ⚡ WebSocket
+
 Protocolo de comunicación bidireccional en tiempo real entre cliente y servidor. Permite chat y notificaciones instantáneas sin necesidad de refrescar la página.
 
 ### 🔄 REST API
+
 Arquitectura de servicios web que utiliza HTTP para realizar operaciones CRUD (Create, Read, Update, Delete) sobre recursos mediante endpoints.
 
 ### 🎨 React Context
+
 Sistema de gestión de estado global en React que permite compartir datos entre componentes sin necesidad de pasar props manualmente en cada nivel.
 
 ### 🔴 Redis
+
 Base de datos en memoria ultra-rápida utilizada para caché y como broker de mensajes para WebSockets. Almacena datos temporales y sesiones.
 
 ### 📦 Serializer
+
 Componente de Django REST Framework que convierte modelos de Python a JSON y viceversa, validando y transformando datos para la API.
 
 ### 🛡️ CORS (Cross-Origin Resource Sharing)
+
 Mecanismo de seguridad que permite o restringe peticiones HTTP entre diferentes dominios. Necesario para que Frontend y Backend se comuniquen.
 
 ---
@@ -451,11 +472,13 @@ RED-RED incluye un **agente de revisión de código** personalizado de GitHub Co
 #### 💡 Cómo Usar
 
 En tus Pull Requests:
+
 ```
 @copilot /review usando code-review-agent
 ```
 
 En GitHub Copilot Chat:
+
 ```
 @workspace /agent code-review-agent revisa este código
 ```
@@ -471,6 +494,7 @@ En GitHub Copilot Chat:
 Este proyecto ha sido desarrollado con **dedicación** y **pasión** por:
 
 ### 👨‍💻 Grupo de 2º DAM - Frameworks
+
 **Ciclo Superior de Desarrollo de Aplicaciones Multiplataforma**
 
 ---
