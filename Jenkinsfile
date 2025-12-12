@@ -67,6 +67,21 @@ pipeline {
                 }
             }
         }
+
+        stage('Migraciones - Backend') {
+            steps {
+                echo 'Ejecutando tests del backend...'
+                dir("${BACKEND_DIR}") {
+                    sh '''
+                        .  ${VENV_DIR}/bin/activate
+                        
+                        # Ejecutamos las migraciones
+                        python manage.py makemigrations
+                        python manage.py migrate
+                    '''
+                }
+            }
+        }
         
         stage('Instalar Dependencias - Frontend (Root)') {
             steps {
